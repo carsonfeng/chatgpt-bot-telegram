@@ -34,4 +34,33 @@ const getChat = async (text) => {
     console.log(error);
   }
 };
-module.exports = { openai, getImage,getChat };
+
+const getChat3_5 = async (text) => {
+  try {
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{
+          role: "user",
+          content: text,
+      }],
+    });
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getChat3_5_dialog = async (dialog) => {
+  try {
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: dialog,
+    });
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+module.exports = { openai, getImage, getChat, getChat3_5, getChat3_5_dialog};

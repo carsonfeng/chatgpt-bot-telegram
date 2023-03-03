@@ -1,7 +1,8 @@
 require('dotenv').config()
 const { Configuration, OpenAIApi } = require("openai");
-const { getImage, getChat } = require("./Helper/functions");
+const { getImage, getChat, getChat3_5, getChat3_5_dialog} = require("./Helper/functions");
 const { Telegraf } = require("telegraf");
+const { message } = require("telegraf/filters");
 
 const configuration = new Configuration({
   apiKey: process.env.API,
@@ -47,6 +48,7 @@ bot.command("image", async (ctx) => {
   }
 });
 
+
 // Chat command
 
 bot.command("ask", async (ctx) => {
@@ -73,6 +75,93 @@ bot.command("ask", async (ctx) => {
   }
 });
 
+// Chat command with chatGPT3
+bot.command("ask3", async (ctx) => {
+  const text = ctx.message.text?.replace("/ask3", "")?.trim().toLowerCase();
 
+  if (text) {
+    ctx.sendChatAction("typing");
+    const res = await getChat3_5(text);
+    if (res) {
+      ctx.telegram.sendMessage(ctx.message.chat.id, res, {
+        reply_to_message_id: ctx.message.message_id,
+      });
+    }
+  } else {
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      "Please ask anything after /ask3",
+      {
+        reply_to_message_id: ctx.message.message_id,
+      }
+    );
+  
+    //  reply("Please ask anything after /ask");
+  }
+});
+
+var dialogGrouByFromId = {}
+var dialogLastTimeStampGroupByFromId = {}
+
+bot.command("new", async (ctx) => {
+  const res = "new conversation"
+  var fromId = ctx.message.from.id
+
+  dialogGrouByFromId[fromId] = []
+  dialogLastTimeStampGroupByFromId[fromId] = new Date().getTime()
+
+  ctx.telegram.sendMessage(ctx.message.chat.id, res, {
+    reply_to_message_id: ctx.message.message_id,
+  });
+});
+
+bot.on(message('text'), async (ctx) => {
+
+  var fromId = ctx.message.from.id
+  if (!(fromId in dialogGrouByFromId)){
+    dialogGrouByFromId[fromId] = []
+  }
+  if (!(fromId in dialogLastTimeStampGroupByFromId)){
+    dialogLastTimeStampGroupByFromId[fromId] = new Date().getTime()
+  }
+
+  // 超过5分钟清理会话从头来
+  var span = (new Date().getTime() - dialogLastTimeStampGroupByFromId[fromId])
+  if (span >= 5 * 60 * 1000) {
+    dialogGrouByFromId[fromId] = []
+  }
+  dialogLastTimeStampGroupByFromId[fromId] = new Date().getTime()
+
+  const text = ctx.message.text?.trim().toLowerCase();
+
+  if (text) {
+    dialogGrouByFromId[fromId].push({
+      role: "user",
+      content: text,
+    })
+    ctx.sendChatAction("typing");
+    const res = await getChat3_5_dialog(dialogGrouByFromId[fromId]);
+    if (res) {
+      dialogGrouByFromId[fromId].push({
+        role: "assistant",
+        content: res,
+      })
+      ctx.telegram.sendMessage(ctx.message.chat.id, res, {
+        reply_to_message_id: ctx.message.message_id,
+      });
+      
+    }
+  } else {
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      "Please ask anything after /ask3",
+      {
+        reply_to_message_id: ctx.message.message_id,
+      }
+    );
+  
+    //  reply("Please ask anything after /ask");
+  }
+});
 
 bot.launch();

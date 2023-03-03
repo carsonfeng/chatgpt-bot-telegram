@@ -1,7 +1,7 @@
 {
   "name": "telegrambot",
   "version": "1.0.0",
-  "description": "",
+  "description": "How to Install: <BR> npm i <BR> nano .env (ADD TELEGRAM API AND OPENAI API) <BR> node index.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,15 @@
   "dependencies": {
     "axios": "^1.2.1",
     "dotenv": "^16.0.3",
-    "openai": "^3.1.0",
+    "openai": "^3.2.1",
     "telegraf": "^4.11.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carsonfeng/chatgpt-bot-telegram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/carsonfeng/chatgpt-bot-telegram/issues"
+  },
+  "homepage": "https://github.com/carsonfeng/chatgpt-bot-telegram#readme"
 }
