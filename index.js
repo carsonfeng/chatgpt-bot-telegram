@@ -115,6 +115,17 @@ bot.command("new", async (ctx) => {
   });
 });
 
+bot.command("continue", async (ctx) => {
+  const res = "continue old conversation"
+  var fromId = ctx.message.from.id
+
+  dialogLastTimeStampGroupByFromId[fromId] = new Date().getTime()
+
+  ctx.telegram.sendMessage(ctx.message.chat.id, res, {
+    reply_to_message_id: ctx.message.message_id,
+  });
+});
+
 bot.on(message('text'), async (ctx) => {
 
   var fromId = ctx.message.from.id
