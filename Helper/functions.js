@@ -38,7 +38,7 @@ const getChat = async (text) => {
 const getChat3_5 = async (text) => {
   try {
     const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [{
           role: "user",
           content: text,
