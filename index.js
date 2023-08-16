@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { Configuration, OpenAIApi } = require("openai");
-const { getImage, getChat, getChat4, getChat4_dialog} = require("./Helper/functions");
+const { getImage, getChat, getChat3, getChat3_dialog, getChat4, getChat4_dialog} = require("./Helper/functions");
 const { Telegraf } = require("telegraf");
 const { message } = require("telegraf/filters");
 
@@ -76,12 +76,12 @@ bot.command("ask", async (ctx) => {
 });
 
 // Chat command with chatGPT3
-bot.command("ask4", async (ctx) => {
-  const text = ctx.message.text?.replace("/ask4", "")?.trim().toLowerCase();
+bot.command("ask3", async (ctx) => {
+  const text = ctx.message.text?.replace("/ask3", "")?.trim().toLowerCase();
 
   if (text) {
     ctx.sendChatAction("typing");
-    const res = await getChat4(text);
+    const res = await getChat3(text);
     if (res) {
       ctx.telegram.sendMessage(ctx.message.chat.id, res, {
         reply_to_message_id: ctx.message.message_id,
@@ -91,6 +91,31 @@ bot.command("ask4", async (ctx) => {
     ctx.telegram.sendMessage(
       ctx.message.chat.id,
       "Please ask anything after /ask3",
+      {
+        reply_to_message_id: ctx.message.message_id,
+      }
+    );
+  
+    //  reply("Please ask anything after /ask");
+  }
+});
+
+// Chat command with chatGPT4
+bot.command("ask4", async (ctx) => {
+  const text = ctx.message.text?.replace("/ask4", "")?.trim().toLowerCase();
+
+  if (text) {
+    ctx.sendChatAction("typing");
+    const res = await getChat3(text);
+    if (res) {
+      ctx.telegram.sendMessage(ctx.message.chat.id, res, {
+        reply_to_message_id: ctx.message.message_id,
+      });
+    }
+  } else {
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      "Please ask anything after /ask4",
       {
         reply_to_message_id: ctx.message.message_id,
       }
@@ -151,7 +176,7 @@ bot.on(message('text'), async (ctx) => {
       content: text,
     })
     ctx.sendChatAction("typing");
-    const res = await getChat4_dialog(dialogGrouByFromId[fromId]);
+    const res = await getChat3_dialog(dialogGrouByFromId[fromId]);
     if (res) {
       dialogGrouByFromId[fromId].push({
         role: "assistant",
