@@ -35,7 +35,7 @@ const getChat = async (text) => {
   }
 };
 
-const getChat3_5 = async (text) => {
+const getChat4 = async (text) => {
   try {
     const response = await openai.createChatCompletion({
       model: "gpt-4-0613",
@@ -50,10 +50,10 @@ const getChat3_5 = async (text) => {
   }
 };
 
-const getChat3_5_dialog = async (dialog) => {
+const getChat4_dialog = async (dialog) => {
   try {
     const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4-0613",
       messages: dialog,
     });
     return response.data.choices[0].message.content;
@@ -63,4 +63,4 @@ const getChat3_5_dialog = async (dialog) => {
 };
 
 
-module.exports = { openai, getImage, getChat, getChat3_5, getChat3_5_dialog};
+module.exports = { openai, getImage, getChat, getChat4, getChat4_dialog};
