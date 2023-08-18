@@ -106,7 +106,7 @@ bot.command("ask4", async (ctx) => {
 
   if (text) {
     ctx.sendChatAction("typing");
-    const res = await getChat3(text);
+    const res = await getChat4(text);
     if (res) {
       ctx.telegram.sendMessage(ctx.message.chat.id, res, {
         reply_to_message_id: ctx.message.message_id,
@@ -176,7 +176,7 @@ bot.on(message('text'), async (ctx) => {
       content: text,
     })
     ctx.sendChatAction("typing");
-    const res = await getChat3_dialog(dialogGrouByFromId[fromId]);
+    const res = await getChat4_dialog(dialogGrouByFromId[fromId]);
     if (res) {
       dialogGrouByFromId[fromId].push({
         role: "assistant",
